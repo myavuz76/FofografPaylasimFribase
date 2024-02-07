@@ -1,0 +1,37 @@
+görsel secmek icin ilk önce kullanicidan gerekli izinleri almak gerekiyor
+ birinci adim Manifest dosyasi icerisindeki izinler
+
+<uses-permission android:name="android.permission.INTERNET"/>
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+ikinci adim ise resimSec fonksiyonu icerisine özel izin almak
+
+onu da ContextCompat.checkSelfPermission() fonksiynu kullanarak yapiyoruz, bu fonksiyon 
+android api sini kontrol ederek izine ihtiyac varmi yokmu diye kontrol ederek ihtiyac var ise 
+izin almamiza yariyor
+
+if (ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED){
+
+            //Permission_Granted izin verildi demek
+            //burada izin verildiye esit degil ise, yani izin almamisiz demek
+            //Activity icerinde oldugumuz icin ActivityCompat ile izin istiyoruz
+            // bu bizden bir dizi icerinde izinleri istmemizi istiyor onun icin arrayOf() kullaniyoruz
+
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),1)
+
+
+
+
+        }else{
+        //burda izinimiz oldugu durumu yaziyoruz
+          val galeriIntent = Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            startActivityForResult(galeriIntent,2)
+
+
+        }
+
+simdi gelen sonuclari tek tek ele aliyoruz
+
+
