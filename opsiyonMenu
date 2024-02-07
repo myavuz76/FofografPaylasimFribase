@@ -1,0 +1,38 @@
+ilk önce Res klasörünün altina menu isminde bir dosya olusturuyoruz
+sonra menu ya sag tiklayip bir menu layout olusturuyoruz
+sonra actity layouta gidip menu ye id leri ile birlikte Item leri ekliyoruz
+
+sonra sinifimiza gelip onCreate fonksiyonunun altina bu menu ile ilgili fonksiyonlari override yapiyoruz
+
+ilk olarak onCreateOptionsMenu fonksiyonunu ekliyoruz
+
+override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val menuInflater = getMenuInflater()
+        menuInflater.inflate(R.menu.secenekler_menusu,menu)
+       
+         return super.onCreateOptionsMenu(menu)
+    } 
+
+simdi hangi Item tilandigini kontrol edecegimiz fonksiyonu override yapip icerisine hangi
+Item e tiklaninca ne yapilacak onu yaziyoruz
+
+override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        if (item.itemId == R.id.resimPaylasItem){
+            
+            val intent = Intent(this, resimPaylas::class.java)
+            startActivity(intent)
+
+        }else if (item.itemId ==R.id.cikisYapItem){
+            auth.signOut()
+
+            val intent= Intent(this, login ::class.java)
+            startActivity(intent)
+            finish()
+
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
+
