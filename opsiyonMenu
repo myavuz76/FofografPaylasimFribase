@@ -36,3 +36,72 @@ override fun onOptionsItemSelected(item: MenuItem): Boolean {
     }
 
 
+simdi de resimSec fonksiyonunun disina cikip, yukarida yazdigimiz izinlerden gelen sonuca göre islemyapacagimiz onRequestPermission 
+fonksiyonunu override yapiyoruz
+
+         requestCode: Int, = yukarda gönderdigimiz izin kodlari 1 yada 2
+        permissions: Array<out String>,
+        grantResults: IntArray = bize verilen sonuclar dizisi
+
+ilk önce gelen requestCode 1 e esitmi diye sorgulayip sonra grantResult dizisi 0 dan büyükmü
+ve ilk elemani PackegeManeger.PERMISIION_GRANTED e esitmi diye sorguluyoruz
+
+   override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+
+        if (requestCode == 1){
+
+            if (grantResults.size >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+
+                //izin verildi demek
+
+                val galeriIntent = Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                startActivityForResult(galeriIntent,2)
+
+
+            }
+
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        //yukarda startActivityForResult lerden gelen sonuclari burada degerlendiriyoruz
+
+        if (requestCode == 2 && resultCode == Activity.RESULT_OK && data != null){
+            //Uri sectigimiz resimin adres bilgisinin verildigi baglanti
+            //simdi secilenResmin Uri sini alabilmek icin global bir nesne olusturuyoruz
+            //sonra Bitmap a cevirmek icin bir global nesne olusturuyoruz
+            // var secilenGorsel : Uri? = null
+            // var secilenBitmap : Bitmap? = null
+            // simdi secilenGörseli data.data ya esitliyoruz
+
+            secilenGorsel = data.data
+
+            if (secilenGorsel != null){
+                if (Build.VERSION.SDK_INT >= 28){
+
+                    // burada getBitmap fonksiyonu kullanimdan kaldirildigi icin versiyon
+                    //kontrolü yaparak eski versiyonlarda burasi calisacak
+
+                    val source = ImageDecoder.createSource(this.contentResolver,secilenGorsel!!)
+                    secilenBitmap = ImageDecoder.decodeBitmap(source)
+                    binding.imageViewTikla.setImageBitmap(secilenBitmap)
+                }
+
+                }else{
+                secilenBitmap = MediaStore.Images.Media.getBitmap(this.contentResolver,secilenGorsel)
+                binding.imageViewTikla.setImageBitmap(secilenBitmap)
+            }
+
+        }
+
+
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+}//ana class
+
+
+
