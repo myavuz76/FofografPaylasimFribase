@@ -1,0 +1,77 @@
+Firebase sayfasina gidip database ve storage i aktif hale getiriyoruz
+
+sonra Acivity calasimizda global olarak storage, database ve auth nesnelerini olusturuyoruz
+
+    private lateinit var auth: FirebaseAuth
+    private lateinit var storage : FirebaseStorage
+    private lateinit var database : FirebaseFirestore
+
+    bunlari OnCreate funksiyonu altinda insilyat yapiyoruz
+
+        auth = FirebaseAuth.getInstance()
+        storage = FirebaseStorage.getInstance()
+        database= FirebaseFirestore.getInstance()
+
+   simdi de butonPaylas fonksiyonu icerisine Firebase storage sayfasina referenz veren degiskenimizi yaziyoruz
+   child de storage icerisinde ki dosyanin adi
+
+   fun butonPaylas(view: View){
+
+        //Depoya kaydetme islemlri
+        //UUID -> universal uniqu id herkes icin uydurma bir metin id veriyor
+
+        val uuid = UUID.randomUUID()
+        val gorselIsmi = "${uuid}.jpg"
+
+        val reference= storage.reference
+        val gorselReference = reference.child("images").child(gorselIsmi)
+         if (secilenGorsel != null){
+
+             gorselReference.putFile(secilenGorsel!!).addOnSuccessListener {
+                   //yükledigimiz görselin nereye yüklendigini almak icin yeni bir referenz
+                 //olusturmamiz gerekiyor
+
+                 val yuklenenGorselReference= storage.reference.child("images").child(gorselIsmi)
+                 yuklenenGorselReference.downloadUrl.addOnSuccessListener {
+                     //simdi Aldigimiz url ve diger verileri veritananina kayit edioruz
+
+                     val downloadUrl= it.toString()
+                     val guncelKullanici = auth.currentUser!!.email.toString()
+                     val yorum = binding.editTextYorum.text.toString()
+                     val tarih = com.google.firebase.Timestamp.now()
+
+                     //vertabani islemleri
+                     //verileri veritabanina kaydetmek icin bir hashmap olusturuyoruz
+                     //Any demek karisik veri
+
+                     val postHasMap= hashMapOf<String,Any>()
+
+                     postHasMap.put("gorselUrl",downloadUrl)
+                     postHasMap.put("kullaniciEmail",guncelKullanici)
+                     postHasMap.put("kullaniciYorum",yorum)
+                     postHasMap.put("tarih",tarih)
+
+                     database.collection("post").add(postHasMap).addOnCompleteListener {
+                         if (it.isSuccessful){
+                             //biz daha önceden haberlr Activity i kapatmadigimiz icin
+                             //buraya finish diyerek direk anasayfa ya gecis yapabiliriz
+                             finish()
+                         }
+                     }.addOnFailureListener {
+                         Toast.makeText(applicationContext,it.localizedMessage,Toast.LENGTH_SHORT).show()
+                     }
+                 }.addOnFailureListener {
+                     Toast.makeText(applicationContext,it.localizedMessage,Toast.LENGTH_SHORT).show()
+                 }
+
+             }.addOnFailureListener {
+             
+                     Toast.makeText(applicationContext,it.localizedMessage,Toast.LENGTH_SHORT).show()
+               
+                }
+
+         //Toast.makeText(this,"paylas butonuna basildi",Toast.LENGTH_SHORT).show()
+         }
+    }
+
+
