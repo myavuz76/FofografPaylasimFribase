@@ -1,0 +1,12 @@
+ilk önce global olarak cektigimiz verileri kaydettigimiz arrayList i ve recyclerAdapteri tanimliyouz
+
+ var postlistesi = ArrayList<post>()
+private lateinit var recyclerViewAdapter : anasayfaRecyleViewAdapter
+
+
+        var layoutManager = LinearLayoutManager(context:this)
+        binding.recyclerView.layoutManager=layoutManager
+
+        recyclerViewAdapter = anasayfaRecyleViewAdapter(postlistesi)
+        binding.recyclerView.adapter= recyclerViewAdapter
+
