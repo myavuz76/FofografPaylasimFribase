@@ -1,0 +1,4 @@
+package com.example.resimpaylasmafirebase
+
+class post(var kullaniciMail: String,var kullaniciYorum : String, var gorselUrl : String ) {
+}
