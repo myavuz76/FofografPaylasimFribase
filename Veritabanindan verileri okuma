@@ -1,0 +1,3 @@
+ilk önce Anasayfa icisine global olarak auth ve database nesnelerimizi olusturuyoruz
+
+sonra verileriAl diye bir fonksiyon olusturuyoruz
