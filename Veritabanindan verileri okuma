@@ -1,3 +1,50 @@
 ilk önce Anasayfa icisine global olarak auth ve database nesnelerimizi olusturuyoruz
 
 sonra verileriAl diye bir fonksiyon olusturuyoruz
+    fun verileriAl(){
+
+        //ilk önce database collection fonksiyonunu yaziyoruz
+
+        database.collection("post").orderBy("tarih",com.google.firebase.firestore.Query.Direction.DESCENDING)
+            //burda tarihe göre siralayacak ve en son gönderilen en basda listelenecek
+           .addSnapshotListener{ snapshot, exception->
+
+            if (exception != null){
+                // bir hata olusmus ise kullaniciya bunu bildiriyoruz
+
+                Toast.makeText(this,exception.localizedMessage,Toast.LENGTH_SHORT).show()
+            }else{
+                //snapshot null mi degil mi diye kontrol ediyoruz
+
+                if (snapshot != null){
+                    //snapshot null olmayabilir ama ici bos olabilir
+
+                    if (snapshot.isEmpty == false){
+
+                        val documents= snapshot.documents
+                        //onceden eklenen postlistesini temizliyoruz
+                        postlistesi.clear()
+
+                        for (document in documents){
+                            val kullaniciMail= document.get("kullaniciEmail") as String
+                            val kullaniciYorum= document.get("kullaniciYorum") as String
+                            val tarih= document.get("tarih") as String
+                            val gorselUrl= document.get("gorselUrl") as String
+
+                            //bunlari bir dizi halinde tutmamiz gerekiyor
+                            //her bir veri icin bir arrayList olusturmak yerine bir sinif modeli olusturmak daha mantikli
+
+                            var indirilenPost= post(kullaniciMail,kullaniciYorum,gorselUrl)
+                            postlistesi.add(indirilenPost)
+
+
+                        }
+
+                    }
+                }
+            }
+
+        }
+
+
+    }
