@@ -29,6 +29,16 @@ class anasayfaRecyleViewAdapter(val postList : ArrayList<post>) : RecyclerView.A
         val kullaniciYorum = holder.itemView.findViewById<TextView>(R.id.textViewYorumRecycleView)
         kullaniciYorum.text= postList[position].kullaniciYorum
 
+      val gorsel = holder.itemView.findViewById<ImageView>(R.id.imageViewRecycleView)
+
+      //veritabanindaki resimleri görüntülemek icin bazi kütüphaneler var
+        // 1. cisi picasso Picasso.get().load("https://i.imgur.com/DvpvklR.png").into(imageView)
+        //https://github.com/square/picasso sayfasindan gredle eklentisini ekliyoruz
+        // implementation ("com.squareup.picasso:picasso:2.8")
+
+        Picasso.get().load(postList[position].gorselUrl).into(gorsel)
+
+
 
 
     }
